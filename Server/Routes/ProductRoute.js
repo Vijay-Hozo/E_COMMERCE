@@ -4,7 +4,7 @@ const ProductController = require("../Controllers/ProductController");
 const auth = require("../Middleware/Auth")
 
 
-Router.get('/getproduct',auth,ProductController.getproducts);
+Router.get('/getproduct',ProductController.getproducts);
 Router.post('/addproduct',ProductController.addproduct);
 Router.patch('/updateproduct/:id',ProductController.updateproduct);
 Router.delete('/deleteproduct/:id',ProductController.deleteproduct);
