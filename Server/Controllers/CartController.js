@@ -23,12 +23,12 @@ const addtocart = async (req, res) => {
         await cart.save();
         return res.status(200).send({ message: "Item quantity updated.", oldProduct });
       } else {
-        cart.products.push({ productid, quantity });
+        cart.products.push({ product_id, quantity });
         await cart.save();
         return res.status(200).send({ message: "Item added to cart." });
       }
     } else {
-      const newCart = new CartModel({ userid, products: [{ productid, quantity }] });
+      const newCart = new CartModel({ userid, products: [{ product_id, quantity }] });
       await newCart.save();
       return res.status(200).send({ message: "New cart created." });
     }
@@ -73,9 +73,9 @@ const getcarts = async (req, res) => {
 // REMOVE QUANTITY
 const removequantity = async (req, res) => {
   const userid = req.user.id;
-  const { productid, quantity } = req.body;
+  const { product_id, quantity } = req.body;
 
-  if (!productid || !userid || quantity == null) {
+  if (!product_id || !userid || quantity == null) {
     return res.status(401).send({ message: "Cannot remove quantity, missing data." });
   }
 
@@ -83,7 +83,7 @@ const removequantity = async (req, res) => {
     const cart = await CartModel.findOne({ userid });
 
     if (cart) {
-      const productIndex = cart.products.findIndex((p) => p.productid === productid);
+      const productIndex = cart.products.findIndex((p) => p.product_id === product_id);
 
       if (productIndex !== -1) {
         cart.products[productIndex].quantity -= quantity;
