@@ -28,7 +28,7 @@ const addtocart = async (req, res) => {
         return res.status(200).send({ message: "Item added to cart." });
       }
     } else {
-      const newCart = new CartModel({ userid, products: [{ product_id, quantity }] });
+      const newCart = new CartModel({ user_id, products: [{ product_id, quantity }] });
       await newCart.save();
       return res.status(200).send({ message: "New cart created." });
     }
@@ -72,15 +72,15 @@ const getcarts = async (req, res) => {
 
 // REMOVE QUANTITY
 const removequantity = async (req, res) => {
-  const userid = req.user.id;
+  const user_id = req.user.id;
   const { product_id, quantity } = req.body;
 
-  if (!product_id || !userid || quantity == null) {
+  if (!product_id || !user_id || quantity == null) {
     return res.status(401).send({ message: "Cannot remove quantity, missing data." });
   }
 
   try {
-    const cart = await CartModel.findOne({ userid });
+    const cart = await CartModel.findOne({ user_id });
 
     if (cart) {
       const productIndex = cart.products.findIndex((p) => p.product_id === product_id);
@@ -96,7 +96,7 @@ const removequantity = async (req, res) => {
           await cart.save();
           res.status(200).send({ message: "Quantity reduced." });
         } else {
-          await CartModel.deleteOne({ userid });
+          await CartModel.deleteOne({ user_id });
           res.status(200).send({ message: "Cart emptied." });
         }
       } else {
