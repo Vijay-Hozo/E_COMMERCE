@@ -19,7 +19,7 @@ const addtocart = async (req, res) => {
     if (cart) {
       const oldProduct = cart.products.find((p) => p.product_id === product_id);
       if (oldProduct) {
-        oldProduct.quantity += quantity;
+        oldProduct.quantity = quantity;
         await cart.save();
         return res.status(200).send({ message: "Item quantity updated.", oldProduct });
       } else {
