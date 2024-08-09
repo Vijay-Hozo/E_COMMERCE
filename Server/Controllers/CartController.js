@@ -8,43 +8,51 @@ const addtocart = async (req, res) => {
   try {
     const { product_id, quantity } = req.body;
     const user_id = req.user.id;
+    
     const cart = await CartModel.findOne({ user_id });
 
     if (cart) {
-      let product = cart.products.find((p) => p.product_id === product_id);
+      let product = cart.products.find((p) => p.product_id.equals(product_id));
 
       if (product) {
         product.quantity += quantity;
         await cart.save();
-        res.status(200).json({
-            status: "success",
-            message: "Product quantity updated",
-            product,
-          });
-      } 
-      else {
-        let newProduct = { product_id, quantity };
+        return res.status(200).json({
+          status: "success",
+          message: "Product quantity updated",
+          product,
+        });
+      } else {
+        const newProduct = { product_id, quantity };
         cart.products.push(newProduct);
         await cart.save();
-        res.status(200).json({
-            status: "success",
-            message: "Product added to cart",
-            newProduct,
-          });
+        return res.status(200).json({
+          status: "success",
+          message: "Product added to cart",
+          product: newProduct,
+        });
       }
-    } 
-    else {
+    } else {
       const newCart = new CartModel({
         user_id,
         products: [{ product_id, quantity }],
       });
       await newCart.save();
-      res.status(200).json({ message: "New Product added to cart" });
+      return res.status(200).json({
+        status: "success",
+        message: "New cart created and product added",
+        cart: newCart,
+      });
     }
   } catch (err) {
-    res.status(500).json({ message: "error", error: err.message });
+    return res.status(500).json({
+      status: "error",
+      message: "An error occurred while adding the product to the cart",
+      error: err.message,
+    });
   }
 };
+
 
 //GET-ITEMS
   const getcarts = async (req, res) => {
