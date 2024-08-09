@@ -58,6 +58,7 @@ const addtocart = async (req, res) => {
             const product = await ProductModel.findOne({ id: item.product_id }, 'title description image price');
             subtotal += product.price * item.quantity;
             return {
+              id: product.id,
               title: product.title,
               description: product.description,
               image:product.image,
@@ -66,6 +67,8 @@ const addtocart = async (req, res) => {
             };
           })
         );
+        console.log(productDetails);
+        
         res.status(200).json({status:"success", productDetails, subtotal });
     }
       } 
